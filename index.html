@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Claridad · Gestión Financiera Personal</title>
+    <!-- Tipografía Montserrat desde Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS para utilidades responsivas -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        crema: '#FAF8F5',
+                        arena: '#F2EDE4',
+                        beige: '#E5DDD0',
+                        piedra: '#8C857B',
+                        carbon: '#2C2A29',
+                        menta: {
+                            light: '#E3F1EC',
+                            DEFAULT: '#4E8D7C',
+                            dark: '#3A6B5E'
+                        },
+                        terracota: {
+                            light: '#F9E8E4',
+                            DEFAULT: '#C86D5B',
+                            dark: '#A35242'
+                        },
+                        ambar: {
+                            light: '#FDF3E1',
+                            DEFAULT: '#C9933B'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos personalizados para estética editorial y fluida en móviles */
+        body {
+            background-color: #FAF8F5;
+            color: #2C2A29;
+            font-family: 'Montserrat', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            padding-bottom: 90px; /* Espacio para la barra inferior */
+        }
+
+        /* Ocultar scrollbar manteniendo funcionalidad */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Animaciones suaves de transición entre pestañas */
+        .tab-view {
+            display: none;
+            animation: fadeIn 0.25s ease-out;
+        }
+        .tab-view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estilo de inputs limpios */
+        input, select {
+            font-family: 'Montserrat', sans-serif;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2C2A29;
+        }
+
+        /* Sombra editorial suave */
+        .card-editorial {
+            background-color: #FFFFFF;
+            border: 1px solid #E5DDD0;
+            box-shadow: 0 4px 20px -4px rgba(44, 42, 41, 0.04);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-arena selection:text-carbon">
+
+    <!-- Contenedor Principal Centrado (Ideal para móvil y cómodo en escritorio) -->
+    <div class="max-w-lg mx-auto min-h-screen flex flex-col">
+
+        <!-- Cabecera Superior con Selector de Mes/Año y Respaldo -->
+        <header class="sticky top-0 z-30 bg-crema/90 backdrop-blur-md border-b border-beige px-5 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="text-[11px] uppercase tracking-widest text-piedra font-semibold block">Finanzas Personales</span>
+                    <h1 class="text-xl font-bold tracking-tight text-carbon">Claridad</h1>
+                </div>
+
+                <!-- Selector de Período (Mes y Año) -->
+                <div class="flex items-center gap-1.5 bg-arena px-3 py-1.5 rounded-full border border-beige">
+                    <button id="prevMonthBtn" aria-label="Mes anterior" class="p-1 text-piedra hover:text-carbon active:scale-90 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    <span id="currentPeriodLabel" class="text-xs font-semibold text-carbon min-w-[105px] text-center capitalize">Noviembre 2026</span>
+                    <button id="nextMonthBtn" aria-label="Mes siguiente" class="p-1 text-piedra hover:text-carbon active:scale-90 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Notificación Toast Flotante (Reemplazo elegante de alert) -->
+        <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-carbon text-crema text-xs font-medium px-4 py-2.5 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 flex items-center gap-2">
+            <span id="toastIcon">✓</span>
+            <span id="toastMsg">Acción completada</span>
+        </div>
+
+        <!-- Modal de Confirmación Personalizado -->
+        <div id="confirmModal" class="fixed inset-0 z-50 bg-carbon/40 backdrop-blur-xs hidden items-center justify-center p-5">
+            <div class="bg-crema border border-beige rounded-2xl p-6 max-w-xs w-full shadow-xl">
+                <h3 id="confirmTitle" class="text-base font-bold text-carbon mb-2">¿Estás seguro?</h3>
+                <p id="confirmText" class="text-xs text-piedra leading-relaxed mb-5">Esta acción no se puede deshacer.</p>
+                <div class="flex gap-2.5">
+                    <button id="confirmCancel" class="flex-1 py-2.5 rounded-xl border border-beige text-xs font-semibold text-carbon hover:bg-arena transition">Cancelar</button>
+                    <button id="confirmAccept" class="flex-1 py-2.5 rounded-xl bg-terracota text-white text-xs font-semibold hover:bg-terracota-dark transition">Confirmar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VISTA 1: RESUMEN / INFORME MENSUAL ==================== -->
+        <main id="view-resumen" class="tab-view active px-5 pt-5 space-y-5 flex-1">
+            
+            <!-- Tarjeta Principal: Balance Neto -->
+            <section class="card-editorial rounded-3xl p-5 relative overflow-hidden">
+                <div class="flex justify-between items-start mb-1">
+                    <span class="text-xs font-medium text-piedra">Balance Neto del Mes</span>
+                    <button id="copyReportBtn" class="flex items-center gap-1.5 text-[11px] font-semibold bg-arena hover:bg-beige text-carbon px-3 py-1.5 rounded-full transition active:scale-95">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        Copiar Informe
+                    </button>
+                </div>
+                <div id="netBalanceAmount" class="text-3xl font-bold tracking-tight text-carbon my-1">$ 0</div>
+                <p id="netBalanceSub" class="text-[11px] text-piedra">Ingresos cobrados menos egresos pagados</p>
+            </section>
+
+            <!-- Grid de Tarjetas de Totales (2x2) -->
+            <section class="grid grid-cols-2 gap-3">
+                <!-- Ingresos Cobrados -->
+                <div class="card-editorial rounded-2xl p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-2 h-2 rounded-full bg-menta"></span>
+                        <span class="text-[11px] font-semibold text-piedra uppercase tracking-wider">Ingresos</span>
+                    </div>
+                    <div id="totalIncomePaid" class="text-lg font-bold text-menta-dark">$ 0</div>
+                    <span class="text-[10px] text-piedra block mt-0.5">Cobrados en el mes</span>
+                </div>
+
+                <!-- Ingresos Pendientes -->
+                <div class="card-editorial rounded-2xl p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-2 h-2 rounded-full bg-ambar"></span>
+                        <span class="text-[11px] font-semibold text-piedra uppercase tracking-wider">Por Cobrar</span>
+                    </div>
+                    <div id="totalIncomePending" class="text-lg font-bold text-ambar">$ 0</div>
+                    <span class="text-[10px] text-piedra block mt-0.5">Ingresos pendientes</span>
+                </div>
+
+                <!-- Egresos Pagados (Variables + Fijos) -->
+                <div class="card-editorial rounded-2xl p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-2 h-2 rounded-full bg-terracota"></span>
+                        <span class="text-[11px] font-semibold text-piedra uppercase tracking-wider">Egresos</span>
+                    </div>
+                    <div id="totalExpensePaid" class="text-lg font-bold text-terracota-dark">$ 0</div>
+                    <span id="expenseBreakdownHint" class="text-[10px] text-piedra block mt-0.5">Variables + Fijos</span>
+                </div>
+
+                <!-- Egresos Pendientes (Variables + Fijos sin pagar) -->
+                <div class="card-editorial rounded-2xl p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="w-2 h-2 rounded-full bg-piedra"></span>
+                        <span class="text-[11px] font-semibold text-piedra uppercase tracking-wider">Por Pagar</span>
+                    </div>
+                    <div id="totalExpensePending" class="text-lg font-bold text-carbon">$ 0</div>
+                    <span class="text-[10px] text-piedra block mt-0.5">Fijos y pendientes</span>
+                </div>
+            </section>
+
+            <!-- Gráfico Comparativo Visual (Canvas API nativo) -->
+            <section class="card-editorial rounded-3xl p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-sm font-bold text-carbon">Comparativa Mensual</h2>
+                        <p class="text-[11px] text-piedra">Ingresos cobrados vs. Egresos totales</p>
+                    </div>
+                    <div class="flex items-center gap-3 text-[10px] font-semibold">
+                        <span class="flex items-center gap-1 text-menta-dark"><span class="w-2.5 h-2.5 rounded-xs bg-menta inline-block"></span>Ingresos</span>
+                        <span class="flex items-center gap-1 text-terracota-dark"><span class="w-2.5 h-2.5 rounded-xs bg-terracota inline-block"></span>Egresos</span>
+                    </div>
+                </div>
+                <div class="w-full h-44 relative">
+                    <canvas id="comparisonCanvas" class="w-full h-full block"></canvas>
+                </div>
+            </section>
+
+            <!-- Desglose por Motivos / Categorías -->
+            <section class="card-editorial rounded-3xl p-5">
+                <h2 class="text-sm font-bold text-carbon mb-1">Desglose por Motivo</h2>
+                <p class="text-[11px] text-piedra mb-4">Distribución de tus movimientos del período</p>
+                <div id="categoryBreakdownList" class="space-y-3">
+                    <!-- Generado dinámicamente -->
+                </div>
+            </section>
+
+            <!-- Sección de Respaldo y Datos (JSON) -->
+            <section class="bg-arena/70 border border-beige rounded-2xl p-4">
+                <h3 class="text-xs font-bold text-carbon mb-1">Respaldo de Información</h3>
+                <p class="text-[11px] text-piedra mb-3">Tus datos se guardan localmente en este dispositivo. Exporta una copia periódicamente.</p>
+                <div class="flex gap-2">
+                    <button id="exportJsonBtn" class="flex-1 bg-white border border-beige hover:bg-crema text-carbon text-xs font-semibold py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5">
+                        <svg class="w-4 h-4 text-piedra" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Exportar JSON
+                    </button>
+                    <label class="flex-1 bg-white border border-beige hover:bg-crema text-carbon text-xs font-semibold py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <svg class="w-4 h-4 text-piedra" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        Importar JSON
+                        <input type="file" id="importJsonInput" accept=".json" class="hidden">
+                    </label>
+                </div>
+            </section>
+        </main>
+
+        <!-- ==================== VISTA 2: MOVIMIENTOS DEL MES ==================== -->
+        <section id="view-movimientos" class="tab-view px-5 pt-5 space-y-4 flex-1">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-bold text-carbon">Movimientos</h2>
+                    <p class="text-xs text-piedra">Toca el estado para marcar como pagado/cobrado</p>
+                </div>
+            </div>
+
+            <!-- Filtros rápidos estilo píldora -->
+            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                <button data-filter="all" class="filter-chip active bg-carbon text-crema text-xs font-semibold px-4 py-2 rounded-full whitespace-nowrap transition">Todos</button>
+                <button data-filter="income" class="filter-chip bg-arena text-piedra text-xs font-semibold px-4 py-2 rounded-full whitespace-nowrap transition">Ingresos</button>
+                <button data-filter="expense" class="filter-chip bg-arena text-piedra text-xs font-semibold px-4 py-2 rounded-full whitespace-nowrap transition">Gastos</button>
+                <button data-filter="pending" class="filter-chip bg-arena text-piedra text-xs font-semibold px-4 py-2 rounded-full whitespace-nowrap transition">Pendientes</button>
+            </div>
+
+            <!-- Lista de Movimientos -->
+            <div id="movementsList" class="space-y-2.5 pb-4">
+                <!-- Generado dinámicamente -->
+            </div>
+        </section>
+
+        <!-- ==================== VISTA 3: GASTOS MENSUALES FIJOS ==================== -->
+        <section id="view-fijos" class="tab-view px-5 pt-5 space-y-5 flex-1">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h2 class="text-lg font-bold text-carbon">Gastos Fijos</h2>
+                    <p class="text-xs text-piedra">Servicios y compromisos recurrentes</p>
+                </div>
+                <button id="resetFixedMonthBtn" class="text-[11px] font-semibold bg-arena hover:bg-beige text-carbon px-3 py-1.5 rounded-full transition">
+                    Reiniciar mes
+                </button>
+            </div>
+
+            <!-- Resumen de Fijos del Mes -->
+            <div class="card-editorial rounded-2xl p-4 flex items-center justify-between">
+                <div>
+                    <span class="text-[11px] font-semibold text-piedra uppercase block">Total Fijos del Mes</span>
+                    <span id="fixedTotalAmount" class="text-xl font-bold text-carbon">$ 0</span>
+                </div>
+                <div class="text-right">
+                    <span id="fixedPaidBadge" class="inline-block text-xs font-semibold bg-menta-light text-menta-dark px-3 py-1 rounded-full">0 / 0 pagados</span>
+                </div>
+            </div>
+
+            <!-- Formulario Compacto para Agregar Nuevo Gasto Fijo -->
+            <form id="fixedForm" class="card-editorial rounded-2xl p-4 space-y-3">
+                <h3 class="text-xs font-bold text-carbon uppercase tracking-wider">Agregar Gasto Recurrente</h3>
+                <div class="grid grid-cols-1 gap-2.5">
+                    <input type="text" id="fixedName" placeholder="Ej. Alquiler, Luz, Internet, Monotributo..." required
+                        class="w-full bg-crema border border-beige rounded-xl px-3.5 py-2.5 text-sm text-carbon placeholder:text-piedra/70">
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-piedra">$</span>
+                            <input type="number" id="fixedAmount" step="0.01" min="1" placeholder="Monto estimado" required
+                                class="w-full bg-crema border border-beige rounded-xl pl-8 pr-3 py-2.5 text-sm text-carbon placeholder:text-piedra/70">
+                        </div>
+                        <input type="number" id="fixedDueDay" min="1" max="31" placeholder="Día venc. (1-31)" required
+                            class="w-full bg-crema border border-beige rounded-xl px-3.5 py-2.5 text-sm text-carbon placeholder:text-piedra/70">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-carbon hover:bg-carbon/90 text-crema text-xs font-semibold py-3 rounded-xl transition active:scale-[0.99]">
+                    + Guardar Gasto Fijo
+                </button>
+            </form>
+
+            <!-- Lista de Gastos Fijos -->
+            <div id="fixedExpensesList" class="space-y-2.5 pb-4">
+                <!-- Generado dinámicamente -->
+            </div>
+        </section>
+
+        <!-- ==================== VISTA 4: NUEVO REGISTRO (+) ==================== -->
+        <section id="view-nuevo" class="tab-view px-5 pt-5 space-y-5 flex-1">
+            <div>
+                <h2 class="text-lg font-bold text-carbon">Nuevo Registro</h2>
+                <p class="text-xs text-piedra">Anota un ingreso o gasto en segundos</p>
+            </div>
+
+            <form id="movementForm" class="card-editorial rounded-3xl p-5 space-y-4">
+                
+                <!-- Selector Visual de Tipo (Ingreso / Gasto) -->
+                <div class="grid grid-cols-2 gap-2 bg-arena p-1.5 rounded-2xl">
+                    <button type="button" id="typeIncomeBtn" class="py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-menta text-white shadow-xs">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                        Ingreso
+                    </button>
+                    <button type="button" id="typeExpenseBtn" class="py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-piedra">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/></svg>
+                        Gasto
+                    </button>
+                </div>
+                <input type="hidden" id="movType" value="income">
+
+                <!-- Campo Monto Destacado -->
+                <div>
+                    <label for="movAmount" class="block text-[11px] font-semibold text-piedra uppercase tracking-wider mb-1.5">Monto</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-bold text-piedra">$</span>
+                        <input type="number" id="movAmount" step="0.01" min="0.01" placeholder="0.00" required
+                            class="w-full bg-crema border border-beige rounded-2xl pl-10 pr-4 py-3.5 text-2xl font-bold text-carbon placeholder:text-beige">
+                    </div>
+                </div>
+
+                <!-- Motivo / Concepto -->
+                <div>
+                    <label for="movReason" class="block text-[11px] font-semibold text-piedra uppercase tracking-wider mb-1.5">Motivo o Concepto</label>
+                    <input type="text" id="movReason" placeholder="Ej. Sueldo, Venta diseño, Supermercado..." required
+                        class="w-full bg-crema border border-beige rounded-2xl px-4 py-3 text-sm font-medium text-carbon placeholder:text-piedra/60">
+                    <!-- Sugerencias rápidas táctiles -->
+                    <div id="quickTags" class="flex flex-wrap gap-1.5 mt-2">
+                        <!-- Se llenan dinámicamente según sea ingreso o gasto -->
+                    </div>
+                </div>
+
+                <!-- Fecha y Estado -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="movDate" class="block text-[11px] font-semibold text-piedra uppercase tracking-wider mb-1.5">Día / Fecha</label>
+                        <input type="date" id="movDate" required
+                            class="w-full bg-crema border border-beige rounded-2xl px-3.5 py-3 text-xs font-semibold text-carbon">
+                    </div>
+
+                    <div>
+                        <label for="movStatus" class="block text-[11px] font-semibold text-piedra uppercase tracking-wider mb-1.5">Estado</label>
+                        <select id="movStatus" class="w-full bg-crema border border-beige rounded-2xl px-3.5 py-3 text-xs font-semibold text-carbon">
+                            <option value="paid" id="statusPaidOption">Cobrado</option>
+                            <option value="pending">Pendiente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Botón Guardar -->
+                <button type="submit" id="saveMovementBtn" class="w-full bg-menta hover:bg-menta-dark text-white font-bold text-sm py-4 rounded-2xl shadow-md transition active:scale-[0.98] mt-2">
+                    Guardar Ingreso
+                </button>
+            </form>
+        </section>
+
+    </div>
+
+    <!-- ==================== NAVEGACIÓN INFERIOR FIJA (ESTILO APP MÓVIL) ==================== -->
+    <nav class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-beige pb-safe">
+        <div class="max-w-lg mx-auto grid grid-cols-4 h-16 items-center px-2">
+            
+            <!-- Tab 1: Resumen -->
+            <button data-target="view-resumen" class="nav-btn active flex flex-col items-center justify-center gap-1 text-carbon transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                <span class="text-[10px] font-semibold">Informe</span>
+            </button>
+
+            <!-- Tab 2: Movimientos -->
+            <button data-target="view-movimientos" class="nav-btn flex flex-col items-center justify-center gap-1 text-piedra hover:text-carbon transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                </svg>
+                <span class="text-[10px] font-semibold">Movimientos</span>
+            </button>
+
+            <!-- Tab 3: Gastos Fijos -->
+            <button data-target="view-fijos" class="nav-btn flex flex-col items-center justify-center gap-1 text-piedra hover:text-carbon transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span class="text-[10px] font-semibold">Fijos</span>
+            </button>
+
+            <!-- Tab 4: Nuevo Registro (+) -->
+            <button data-target="view-nuevo" class="nav-btn flex flex-col items-center justify-center gap-1 text-piedra hover:text-carbon transition">
+                <div class="w-8 h-8 rounded-full bg-carbon text-crema flex items-center justify-center shadow-xs">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                    </svg>
+                </div>
+                <span class="text-[10px] font-semibold">Nuevo</span>
+            </button>
+
+        </div>
+    </nav>
+
+    <script>
+        /**
+         * ============================================================================
+         * CLARIDAD - GESTIÓN FINANCIERA PERSONAL
+         * Arquitectura limpia en Vanilla JS con persistencia en LocalStorage
+         * ============================================================================
+         */
+
+        // --- ESTADO GLOBAL DE LA APLICACIÓN ---
+        const STORAGE_KEY = 'claridad_finanzas_v1';
+
+        // Inicializar fecha actual en el selector de período
+        const today = new Date();
+        let state = {
+            selectedYear: today.getFullYear(),
+            selectedMonth: today.getMonth(), // 0 - 11
+            currentFilter: 'all',
+            movements: [],      // { id, type: 'income'|'expense', amount, reason, date: 'YYYY-MM-DD', status: 'paid'|'pending' }
+            fixedTemplates: [], // { id, name, amount, dueDay }
+            fixedPayments: {}   // { 'YYYY-MM': { [fixedId]: true } } -> Registra qué fijos se pagaron en cada mes
+        };
+
+        const MONTH_NAMES = [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
+
+        const QUICK_TAGS = {
+            income: ['Sueldo', 'Honorarios', 'Venta', 'Cobro pendiente', 'Extra'],
+            expense: ['Supermercado', 'Transporte', 'Comida', 'Salud', 'Ocio', 'Hogar']
+        };
+
+        // --- UTILIDADES DE FORMATO Y FECHA ---
+        function formatCurrency(num) {
+            return '$ ' + Number(num || 0).toLocaleString('es-AR', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function getPeriodKey(year = state.selectedYear, month = state.selectedMonth) {
+            const m = String(month + 1).padStart(2, '0');
+            return `${year}-${m}`;
+        }
+
+        function getTodayISO() {
+            const d = new Date();
+            const offset = d.getTimezoneOffset();
+            const local = new Date(d.getTime() - (offset * 60 * 1000));
+            return local.toISOString().split('T')[0];
+        }
+
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // --- NOTIFICACIONES Y MODAL DE CONFIRMACIÓN ---
+        let toastTimeout;
+        function showToast(message, icon = '✓') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = message;
+            document.getElementById('toastIcon').textContent = icon;
+            toast.classList.remove('opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('opacity-0');
+            }, 2600);
+        }
+
+        function showConfirm(title, text) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('confirmModal');
+                document.getElementById('confirmTitle').textContent = title;
+                document.getElementById('confirmText').textContent = text;
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+
+                const cleanup = (result) => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    resolve(result);
+                };
+
+                document.getElementById('confirmCancel').onclick = () => cleanup(false);
+                document.getElementById('confirmAccept').onclick = () => cleanup(true);
+            });
+        }
+
+        // --- PERSISTENCIA EN LOCALSTORAGE ---
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    state.movements = Array.isArray(parsed.movements) ? parsed.movements : [];
+                    state.fixedTemplates = Array.isArray(parsed.fixedTemplates) ? parsed.fixedTemplates : [];
+                    state.fixedPayments = parsed.fixedPayments && typeof parsed.fixedPayments === 'object' ? parsed.fixedPayments : {};
+                } else {
+                    // Datos de ejemplo iniciales para que la app luzca intuitiva desde el primer uso
+                    seedInitialDemoData();
+                }
+            } catch (e) {
+                console.error('Error cargando LocalStorage:', e);
+            }
+        }
+
+        function saveData() {
+            try {
+                const payload = {
+                    movements: state.movements,
+                    fixedTemplates: state.fixedTemplates,
+                    fixedPayments: state.fixedPayments
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+            } catch (e) {
+                showToast('Error al guardar datos locales', '!');
+            }
+        }
+
+        function seedInitialDemoData() {
+            const currentISO = getTodayISO();
+            const prefix = currentISO.slice(0, 8);
+            state.movements = [
+                { id: 'm1', type: 'income', amount: 850000, reason: 'Sueldo Mensual', date: prefix + '05', status: 'paid' },
+                { id: 'm2', type: 'income', amount: 180000, reason: 'Proyecto Freelance', date: prefix + '12', status: 'pending' },
+                { id: 'm3', type: 'expense', amount: 95000, reason: 'Supermercado', date: prefix + '08', status: 'paid' }
+            ];
+            state.fixedTemplates = [
+                { id: 'f1', name: 'Alquiler', amount: 320000, dueDay: 10 },
+                { id: 'f2', name: 'Internet Fibra', amount: 28000, dueDay: 15 },
+                { id: 'f3', name: 'Luz y Gas', amount: 35000, dueDay: 20 }
+            ];
+            const period = getPeriodKey();
+            state.fixedPayments[period] = { 'f1': true };
+            saveData();
+        }
+
+        // --- CÁLCULOS DEL PERÍODO SELECCIONADO ---
+        function getMonthlyStats() {
+            const periodPrefix = getPeriodKey(); // 'YYYY-MM'
+            const monthMovements = state.movements.filter(m => m.date.startsWith(periodPrefix));
+
+            let incomePaid = 0;
+            let incomePending = 0;
+            let expenseVarPaid = 0;
+            let expenseVarPending = 0;
+
+            // Mapa para agrupar motivos (Ingresos y Egresos)
+            const categoryMap = {};
+
+            monthMovements.forEach(m => {
+                const amt = Number(m.amount);
+                if (m.type === 'income') {
+                    if (m.status === 'paid') incomePaid += amt;
+                    else incomePending += amt;
+                } else {
+                    if (m.status === 'paid') expenseVarPaid += amt;
+                    else expenseVarPending += amt;
+                }
+
+                // Agrupar por concepto limpio
+                const key = `${m.type}:${m.reason.trim()}`;
+                if (!categoryMap[key]) {
+                    categoryMap[key] = { type: m.type, reason: m.reason.trim(), total: 0 };
+                }
+                categoryMap[key].total += amt;
+            });
+
+            // Calcular gastos fijos del período
+            const paidMap = state.fixedPayments[periodPrefix] || {};
+            let fixedPaidTotal = 0;
+            let fixedPendingTotal = 0;
+            let fixedPaidCount = 0;
+
+            state.fixedTemplates.forEach(f => {
+                const amt = Number(f.amount);
+                if (paidMap[f.id]) {
+                    fixedPaidTotal += amt;
+                    fixedPaidCount++;
+                    const key = `expense:${f.name} (Fijo)`;
+                    categoryMap[key] = { type: 'expense', reason: `${f.name} (Fijo)`, total: amt };
+                } else {
+                    fixedPendingTotal += amt;
+                }
+            });
+
+            const totalExpensePaid = expenseVarPaid + fixedPaidTotal;
+            const totalExpensePending = expenseVarPending + fixedPendingTotal;
+            const netBalance = incomePaid - totalExpensePaid;
+
+            return {
+                monthMovements,
+                incomePaid,
+                incomePending,
+                expenseVarPaid,
+                fixedPaidTotal,
+                totalExpensePaid,
+                totalExpensePending,
+                netBalance,
+                fixedPaidCount,
+                fixedTotalCount: state.fixedTemplates.length,
+                categories: Object.values(categoryMap).sort((a, b) => b.total - a.total)
+            };
+        }
+
+        // --- RENDERIZADO DE LA VISTA 1: RESUMEN E INFORME ---
+        function renderSummary() {
+            const stats = getMonthlyStats();
+
+            // Actualizar etiqueta de mes/año en cabecera
+            document.getElementById('currentPeriodLabel').textContent =
+                `${MONTH_NAMES[state.selectedMonth]} ${state.selectedYear}`;
+
+            // Balance Neto
+            const netEl = document.getElementById('netBalanceAmount');
+            netEl.textContent = formatCurrency(stats.netBalance);
+            netEl.className = `text-3xl font-bold tracking-tight my-1 ${
+                stats.netBalance >= 0 ? 'text-carbon' : 'text-terracota-dark'
+            }`;
+
+            // Tarjetas 2x2
+            document.getElementById('totalIncomePaid').textContent = formatCurrency(stats.incomePaid);
+            document.getElementById('totalIncomePending').textContent = formatCurrency(stats.incomePending);
+            document.getElementById('totalExpensePaid').textContent = formatCurrency(stats.totalExpensePaid);
+            document.getElementById('expenseBreakdownHint').textContent =
+                `Var: ${formatCurrency(stats.expenseVarPaid)} · Fijos: ${formatCurrency(stats.fixedPaidTotal)}`;
+            document.getElementById('totalExpensePending').textContent = formatCurrency(stats.totalExpensePending);
+
+            // Dibujar gráfico en Canvas
+            drawComparisonChart(stats);
+
+            // Renderizar desglose por categorías/motivos
+            const listEl = document.getElementById('categoryBreakdownList');
+            if (stats.categories.length === 0) {
+                listEl.innerHTML = `<p class="text-xs text-piedra text-center py-4">No hay movimientos registrados en este mes.</p>`;
+            } else {
+                const maxVal = Math.max(...stats.categories.map(c => c.total), 1);
+                listEl.innerHTML = stats.categories.map(cat => {
+                    const pct = Math.round((cat.total / maxVal) * 100);
+                    const isInc = cat.type === 'income';
+                    const barColor = isInc ? 'bg-menta' : 'bg-terracota';
+                    const textColor = isInc ? 'text-menta-dark' : 'text-terracota-dark';
+                    return `
+                        <div>
+                            <div class="flex justify-between items-center text-xs mb-1">
+                                <span class="font-medium text-carbon truncate pr-2">${escapeHTML(cat.reason)}</span>
+                                <span class="font-bold ${textColor} whitespace-nowrap">${isInc ? '+' : '-'} ${formatCurrency(cat.total)}</span>
+                            </div>
+                            <div class="w-full h-2 bg-arena rounded-full overflow-hidden">
+                                <div class="${barColor} h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        // --- GRÁFICO CANVAS RESPONSIVO ---
+        function drawComparisonChart(stats) {
+            const canvas = document.getElementById('comparisonCanvas');
+            if (!canvas) return;
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width === 0) return;
+
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+
+            const w = rect.width;
+            const h = rect.height;
+            ctx.clearRect(0, 0, w, h);
+
+            const items = [
+                { label: 'Cobrado', value: stats.incomePaid, color: '#4E8D7C' },
+                { label: 'Por Cobrar', value: stats.incomePending, color: '#C9933B' },
+                { label: 'Egresos', value: stats.totalExpensePaid, color: '#C86D5B' },
+                { label: 'Por Pagar', value: stats.totalExpensePending, color: '#8C857B' }
+            ];
+
+            const maxVal = Math.max(...items.map(i => i.value), 100);
+            const paddingBottom = 26;
+            const paddingTop = 22;
+            const chartHeight = h - paddingBottom - paddingTop;
+            const slotWidth = w / items.length;
+            const barWidth = Math.min(38, slotWidth * 0.52);
+
+            // Línea base sutil
+            ctx.strokeStyle = '#E5DDD0';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(12, h - paddingBottom);
+            ctx.lineTo(w - 12, h - paddingBottom);
+            ctx.stroke();
+
+            items.forEach((item, idx) => {
+                const centerX = slotWidth * idx + slotWidth / 2;
+                const barH = Math.max(4, (item.value / maxVal) * chartHeight);
+                const x = centerX - barWidth / 2;
+                const y = h - paddingBottom - barH;
+
+                // Barra con esquinas superiores redondeadas
+                ctx.fillStyle = item.color;
+                ctx.beginPath();
+                const r = 6;
+                ctx.moveTo(x, y + r);
+                ctx.arcTo(x, y, x + barWidth, y, r);
+                ctx.arcTo(x + barWidth, y, x + barWidth, y + barH, r);
+                ctx.lineTo(x + barWidth, h - paddingBottom);
+                ctx.lineTo(x, h - paddingBottom);
+                ctx.closePath();
+                ctx.fill();
+
+                // Valor encima de la barra
+                ctx.fillStyle = '#2C2A29';
+                ctx.font = '600 10px Montserrat, sans-serif';
+                ctx.textAlign = 'center';
+                const shortVal = item.value >= 1000 ? `$${(item.value / 1000).toFixed(1)}k` : `$${item.value}`;
+                ctx.fillText(shortVal, centerX, y - 6);
+
+                // Etiqueta inferior
+                ctx.fillStyle = '#8C857B';
+                ctx.font = '500 10px Montserrat, sans-serif';
+                ctx.fillText(item.label, centerX, h - 8);
+            });
+        }
+
+        // --- RENDERIZADO DE LA VISTA 2: MOVIMIENTOS ---
+        function renderMovements() {
+            const periodPrefix = getPeriodKey();
+            let list = state.movements
+                .filter(m => m.date.startsWith(periodPrefix))
+                .sort((a, b) => b.date.localeCompare(a.date));
+
+            if (state.currentFilter === 'income') list = list.filter(m => m.type === 'income');
+            if (state.currentFilter === 'expense') list = list.filter(m => m.type === 'expense');
+            if (state.currentFilter === 'pending') list = list.filter(m => m.status === 'pending');
+
+            const container = document.getElementById('movementsList');
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div class="card-editorial rounded-2xl p-8 text-center">
+                        <p class="text-xs font-medium text-piedra">No hay movimientos para este filtro.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = list.map(m => {
+                const isInc = m.type === 'income';
+                const isPaid = m.status === 'paid';
+                const dayNum = m.date.split('-')[2];
+                const statusLabel = isPaid ? (isInc ? 'Cobrado' : 'Pagado') : 'Pendiente';
+                const badgeClass = isPaid
+                    ? 'bg-menta-light text-menta-dark'
+                    : 'bg-ambar-light text-ambar';
+
+                return `
+                    <div class="card-editorial rounded-2xl p-3.5 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <!-- Indicador de día -->
+                            <div class="w-10 h-10 rounded-xl bg-arena flex flex-col items-center justify-center shrink-0">
+                                <span class="text-[9px] uppercase font-bold text-piedra leading-none">Día</span>
+                                <span class="text-sm font-bold text-carbon leading-tight">${dayNum}</span>
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="text-sm font-semibold text-carbon truncate">${escapeHTML(m.reason)}</h4>
+                                <button onclick="toggleMovementStatus('${m.id}')" class="mt-1 inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full ${badgeClass} active:scale-95 transition">
+                                    <span>${isPaid ? '✓' : '◷'}</span> ${statusLabel}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="text-sm font-bold ${isInc ? 'text-menta-dark' : 'text-terracota-dark'}">
+                                ${isInc ? '+' : '-'}${formatCurrency(m.amount)}
+                            </span>
+                            <button onclick="deleteMovement('${m.id}')" aria-label="Eliminar" class="p-2 text-piedra/60 hover:text-terracota transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // --- RENDERIZADO DE LA VISTA 3: GASTOS FIJOS ---
+        function renderFixedExpenses() {
+            const periodPrefix = getPeriodKey();
+            const paidMap = state.fixedPayments[periodPrefix] || {};
+            const sorted = [...state.fixedTemplates].sort((a, b) => a.dueDay - b.dueDay);
+
+            let totalAmount = 0;
+            let paidCount = 0;
+            sorted.forEach(f => {
+                totalAmount += Number(f.amount);
+                if (paidMap[f.id]) paidCount++;
+            });
+
+            document.getElementById('fixedTotalAmount').textContent = formatCurrency(totalAmount);
+            document.getElementById('fixedPaidBadge').textContent = `${paidCount} / ${sorted.length} pagados`;
+
+            const container = document.getElementById('fixedExpensesList');
+            if (sorted.length === 0) {
+                container.innerHTML = `<p class="text-xs text-piedra text-center py-4">Aún no tienes gastos fijos configurados.</p>`;
+                return;
+            }
+
+            container.innerHTML = sorted.map(f => {
+                const isPaid = !!paidMap[f.id];
+                return `
+                    <div class="card-editorial rounded-2xl p-3.5 flex items-center justify-between gap-3 ${isPaid ? 'opacity-80' : ''}">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <button onclick="toggleFixedPayment('${f.id}')" class="w-7 h-7 rounded-full border-2 flex items-center justify-center shrink-0 transition ${
+                                isPaid ? 'bg-menta border-menta text-white' : 'border-beige bg-crema text-transparent hover:border-piedra'
+                            }">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            </button>
+                            <div class="min-w-0">
+                                <h4 class="text-sm font-semibold text-carbon truncate ${isPaid ? 'line-through text-piedra' : ''}">${escapeHTML(f.name)}</h4>
+                                <span class="text-[11px] text-piedra block">Vence el día ${f.dueDay} · ${isPaid ? '<strong class="text-menta-dark">Pagado este mes</strong>' : 'Pendiente'}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="text-sm font-bold text-carbon">${formatCurrency(f.amount)}</span>
+                            <button onclick="deleteFixedTemplate('${f.id}')" aria-label="Eliminar gasto fijo" class="p-1.5 text-piedra/60 hover:text-terracota transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // --- ACCIONES DE USUARIO (CRUD) ---
+        window.toggleMovementStatus = function(id) {
+            const mov = state.movements.find(m => m.id === id);
+            if (!mov) return;
+            mov.status = mov.status === 'paid' ? 'pending' : 'paid';
+            saveData();
+            refreshAllViews();
+            showToast(mov.status === 'paid' ? 'Marcado como completado' : 'Marcado como pendiente');
+        };
+
+        window.deleteMovement = async function(id) {
+            const ok = await showConfirm('Eliminar movimiento', '¿Deseas borrar este registro permanentemente?');
+            if (!ok) return;
+            state.movements = state.movements.filter(m => m.id !== id);
+            saveData();
+            refreshAllViews();
+            showToast('Movimiento eliminado', '🗑');
+        };
+
+        window.toggleFixedPayment = function(fixedId) {
+            const periodPrefix = getPeriodKey();
+            if (!state.fixedPayments[periodPrefix]) {
+                state.fixedPayments[periodPrefix] = {};
+            }
+            const current = !!state.fixedPayments[periodPrefix][fixedId];
+            state.fixedPayments[periodPrefix][fixedId] = !current;
+            saveData();
+            refreshAllViews();
+            showToast(!current ? 'Gasto fijo contabilizado en egresos' : 'Pago de gasto fijo desmarcado');
+        };
+
+        window.deleteFixedTemplate = async function(fixedId) {
+            const ok = await showConfirm('Eliminar gasto fijo', 'Se quitará de tu lista de gastos mensuales recurrentes.');
+            if (!ok) return;
+            state.fixedTemplates = state.fixedTemplates.filter(f => f.id !== fixedId);
+            saveData();
+            refreshAllViews();
+            showToast('Gasto fijo eliminado', '🗑');
+        };
+
+        function refreshAllViews() {
+            renderSummary();
+            renderMovements();
+            renderFixedExpenses();
+        }
+
+        // --- NAVEGACIÓN INFERIOR ---
+        function switchTab(targetId) {
+            document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+            document.getElementById(targetId).classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.dataset.target === targetId) {
+                    btn.classList.remove('text-piedra');
+                    btn.classList.add('text-carbon');
+                } else {
+                    btn.classList.remove('text-carbon');
+                    btn.classList.add('text-piedra');
+                }
+            });
+
+            if (targetId === 'view-resumen') {
+                // Redibujar canvas al hacerse visible
+                requestAnimationFrame(() => renderSummary());
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- CONFIGURACIÓN DE FORMULARIO DE NUEVO REGISTRO ---
+        function setupMovementForm() {
+            const typeInput = document.getElementById('movType');
+            const incBtn = document.getElementById('typeIncomeBtn');
+            const expBtn = document.getElementById('typeExpenseBtn');
+            const saveBtn = document.getElementById('saveMovementBtn');
+            const statusPaidOpt = document.getElementById('statusPaidOption');
+            const dateInput = document.getElementById('movDate');
+
+            dateInput.value = getTodayISO();
+
+            function updateFormTheme(type) {
+                typeInput.value = type;
+                if (type === 'income') {
+                    incBtn.className = 'py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-menta text-white shadow-xs';
+                    expBtn.className = 'py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-piedra';
+                    saveBtn.className = 'w-full bg-menta hover:bg-menta-dark text-white font-bold text-sm py-4 rounded-2xl shadow-md transition active:scale-[0.98] mt-2';
+                    saveBtn.textContent = 'Guardar Ingreso';
+                    statusPaidOpt.textContent = 'Cobrado';
+                } else {
+                    expBtn.className = 'py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 bg-terracota text-white shadow-xs';
+                    incBtn.className = 'py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 text-piedra';
+                    saveBtn.className = 'w-full bg-terracota hover:bg-terracota-dark text-white font-bold text-sm py-4 rounded-2xl shadow-md transition active:scale-[0.98] mt-2';
+                    saveBtn.textContent = 'Guardar Gasto';
+                    statusPaidOpt.textContent = 'Pagado';
+                }
+                renderQuickTags(type);
+            }
+
+            function renderQuickTags(type) {
+                const container = document.getElementById('quickTags');
+                container.innerHTML = QUICK_TAGS[type].map(tag => `
+                    <button type="button" class="text-[11px] font-medium bg-arena hover:bg-beige text-carbon px-2.5 py-1 rounded-full transition"
+                        onclick="document.getElementById('movReason').value='${tag}'">${tag}</button>
+                `).join('');
+            }
+
+            incBtn.addEventListener('click', () => updateFormTheme('income'));
+            expBtn.addEventListener('click', () => updateFormTheme('expense'));
+            updateFormTheme('income');
+
+            document.getElementById('movementForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const type = typeInput.value;
+                const amount = parseFloat(document.getElementById('movAmount').value);
+                const reason = document.getElementById('movReason').value.trim();
+                const date = dateInput.value;
+                const status = document.getElementById('movStatus').value;
+
+                if (!amount || amount <= 0 || !reason || !date) return;
+
+                state.movements.push({
+                    id: 'mov_' + Date.now(),
+                    type,
+                    amount,
+                    reason,
+                    date,
+                    status
+                });
+
+                // Sincronizar período visual con la fecha del movimiento cargado
+                const [y, m] = date.split('-').map(Number);
+                state.selectedYear = y;
+                state.selectedMonth = m - 1;
+
+                saveData();
+                e.target.reset();
+                dateInput.value = getTodayISO();
+                updateFormTheme(type);
+                refreshAllViews();
+                showToast(type === 'income' ? 'Ingreso registrado' : 'Gasto registrado');
+                switchTab('view-resumen');
+            });
+        }
+
+        // --- INICIALIZACIÓN DE EVENTOS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            setupMovementForm();
+
+            // Navegación inferior
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', () => switchTab(btn.dataset.target));
+            });
+
+            // Selector de Mes Anterior / Siguiente
+            document.getElementById('prevMonthBtn').addEventListener('click', () => {
+                state.selectedMonth--;
+                if (state.selectedMonth < 0) {
+                    state.selectedMonth = 11;
+                    state.selectedYear--;
+                }
+                refreshAllViews();
+            });
+
+            document.getElementById('nextMonthBtn').addEventListener('click', () => {
+                state.selectedMonth++;
+                if (state.selectedMonth > 11) {
+                    state.selectedMonth = 0;
+                    state.selectedYear++;
+                }
+                refreshAllViews();
+            });
+
+            // Filtros de movimientos
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-chip').forEach(c => {
+                        c.classList.remove('bg-carbon', 'text-crema');
+                        c.classList.add('bg-arena', 'text-piedra');
+                    });
+                    chip.classList.remove('bg-arena', 'text-piedra');
+                    chip.classList.add('bg-carbon', 'text-crema');
+                    state.currentFilter = chip.dataset.filter;
+                    renderMovements();
+                });
+            });
+
+            // Agregar Gasto Fijo
+            document.getElementById('fixedForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('fixedName').value.trim();
+                const amount = parseFloat(document.getElementById('fixedAmount').value);
+                const dueDay = parseInt(document.getElementById('fixedDueDay').value, 10);
+
+                if (!name || !amount || amount <= 0 || !dueDay) return;
+
+                state.fixedTemplates.push({
+                    id: 'fix_' + Date.now(),
+                    name,
+                    amount,
+                    dueDay: Math.min(31, Math.max(1, dueDay))
+                });
+
+                saveData();
+                e.target.reset();
+                refreshAllViews();
+                showToast('Gasto fijo añadido');
+            });
+
+            // Reiniciar estado de gastos fijos del mes actual
+            document.getElementById('resetFixedMonthBtn').addEventListener('click', async () => {
+                const periodLabel = `${MONTH_NAMES[state.selectedMonth]} ${state.selectedYear}`;
+                const ok = await showConfirm('Reiniciar gastos fijos', `¿Desmarcar todos los gastos fijos pagados de ${periodLabel}?`);
+                if (!ok) return;
+                delete state.fixedPayments[getPeriodKey()];
+                saveData();
+                refreshAllViews();
+                showToast('Estado del mes reiniciado');
+            });
+
+            // Copiar Resumen del Informe Mensual al Portapapeles
+            document.getElementById('copyReportBtn').addEventListener('click', () => {
+                const stats = getMonthlyStats();
+                const periodLabel = `${MONTH_NAMES[state.selectedMonth]} ${state.selectedYear}`;
+                const reportText = [
+                    `📊 INFORME FINANCIERO - ${periodLabel.toUpperCase()}`,
+                    `──────────────────────────`,
+                    `✅ Ingresos Cobrados: ${formatCurrency(stats.incomePaid)}`,
+                    `⏳ Ingresos Pendientes: ${formatCurrency(stats.incomePending)}`,
+                    `💸 Egresos Pagados: ${formatCurrency(stats.totalExpensePaid)} (Var: ${formatCurrency(stats.expenseVarPaid)} | Fijos: ${formatCurrency(stats.fixedPaidTotal)})`,
+                    `📅 Por Pagar: ${formatCurrency(stats.totalExpensePending)}`,
+                    `──────────────────────────`,
+                    `💰 BALANCE NETO: ${formatCurrency(stats.netBalance)}`
+                ].join('\n');
+
+                // Uso de textarea temporal + execCommand('copy') para máxima compatibilidad móvil/iframe
+                const temp = document.createElement('textarea');
+                temp.value = reportText;
+                document.body.appendChild(temp);
+                temp.select();
+                document.execCommand('copy');
+                document.body.removeChild(temp);
+                showToast('Informe copiado al portapapeles', '📋');
+            });
+
+            // Exportar Respaldo JSON
+            document.getElementById('exportJsonBtn').addEventListener('click', () => {
+                const dataStr = JSON.stringify({
+                    movements: state.movements,
+                    fixedTemplates: state.fixedTemplates,
+                    fixedPayments: state.fixedPayments,
+                    exportedAt: new Date().toISOString()
+                }, null, 2);
+
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `claridad-finanzas-${getPeriodKey()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('Archivo de respaldo descargado');
+            });
+
+            // Importar Respaldo JSON
+            document.getElementById('importJsonInput').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const imported = JSON.parse(event.target.result);
+                        if (Array.isArray(imported.movements) && Array.isArray(imported.fixedTemplates)) {
+                            state.movements = imported.movements;
+                            state.fixedTemplates = imported.fixedTemplates;
+                            state.fixedPayments = imported.fixedPayments || {};
+                            saveData();
+                            refreshAllViews();
+                            showToast('Datos restaurados con éxito');
+                        } else {
+                            showToast('Formato de archivo inválido', '!');
+                        }
+                    } catch (err) {
+                        showToast('No se pudo leer el archivo JSON', '!');
+                    }
+                    e.target.value = '';
+                };
+                reader.readAsText(file);
+            });
+
+            // Redibujar gráfico al cambiar tamaño de pantalla
+            window.addEventListener('resize', () => {
+                if (document.getElementById('view-resumen').classList.contains('active')) {
+                    drawComparisonChart(getMonthlyStats());
+                }
+            });
+
+            // Render inicial
+            refreshAllViews();
+        });
+    </script>
+</body>
+</html>
