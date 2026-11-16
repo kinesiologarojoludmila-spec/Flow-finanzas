@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Oink · Gestión Financiera Integral</title>
+    <title>Flow · Gestión Financiera Integral</title>
     
     <!-- Configuración PWA para permitir instalación como App -->
     <meta name="theme-color" content="#FAF8F5">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Oink">
-    <link rel="manifest" href='data:application/manifest+json,{"name":"Oink · Gestión Financiera Integral","short_name":"Oink","start_url":"./","display":"standalone","background_color":"#FAF8F5","theme_color":"#FAF8F5","icons":[]}'>
+    <meta name="apple-mobile-web-app-title" content="Flow">
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Flow · Gestión Financiera Integral","short_name":"Flow","start_url":"./","display":"standalone","background_color":"#FAF8F5","theme_color":"#FAF8F5","icons":[]}'>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,51 +97,51 @@
 <body class="antialiased selection:bg-arena selection:text-carbon">
 
     <!-- ==================== PANTALLA DE ACTIVACIÓN ==================== -->
-<div id="activationScreen" class="fixed inset-0 z-[100] bg-crema flex items-center justify-center p-5">
-    <div class="card-editorial rounded-3xl p-7 max-w-sm w-full text-center space-y-5 shadow-xl">
-        <div class="w-16 h-16 rounded-3xl bg-arena border border-beige flex items-center justify-center text-3xl mx-auto">
-            🐷
-        </div>
-        <div>
-            <span class="text-[10px] font-bold uppercase tracking-widest text-oro-dark block mb-1">Acceso Exclusivo</span>
-            <h2 class="text-2xl font-bold text-carbon">Bienvenido a Oink</h2>
-            <p class="text-xs text-piedra mt-1.5 leading-relaxed">
-                Ingresa tu código de activación para desbloquear tu alcancía digital en este dispositivo.
-            </p>
-        </div>
-
-        <form id="activationForm" class="space-y-3 text-left">
+    <div id="activationScreen" class="fixed inset-0 z-[100] bg-crema flex items-center justify-center p-5">
+        <div class="card-editorial rounded-3xl p-7 max-w-sm w-full text-center space-y-5 shadow-xl">
+            <div class="w-16 h-16 rounded-3xl bg-arena border border-beige flex items-center justify-center text-2xl mx-auto font-bold tracking-tighter text-carbon">
+                FL
+            </div>
             <div>
-                <input type="text" id="activationInput" placeholder="Ej. OINK-2026" required autocomplete="off"
-                    class="w-full bg-crema border border-beige rounded-2xl px-4 py-3.5 text-center text-sm font-bold uppercase tracking-widest text-carbon placeholder:text-piedra/50 placeholder:font-medium placeholder:tracking-normal">
-                <p id="activationError" class="hidden text-[11px] font-semibold text-terracota-dark text-center mt-2">
-                    Código incorrecto. Verifica e intenta nuevamente.
+                <span class="text-[10px] font-bold uppercase tracking-widest text-oro-dark block mb-1">Acceso Exclusivo</span>
+                <h2 class="text-2xl font-bold text-carbon">Bienvenido a Flow</h2>
+                <p class="text-xs text-piedra mt-1.5 leading-relaxed">
+                    Ingresa tu código de activación para desbloquear tu plataforma financiera en este dispositivo.
                 </p>
             </div>
-            <button type="submit" class="w-full bg-carbon hover:bg-carbon/90 text-crema font-bold text-xs py-4 rounded-2xl shadow-md transition active:scale-[0.98]">
-                Activar Aplicación
-            </button>
-        </form>
 
-        <div class="pt-2 border-t border-beige">
-            <p class="text-[11px] text-piedra">
-                ¿Aún no tienes tu código? <br>
-                <a href="https://wa.me/5492284323833?text=Hola!%20Quiero%20mi%20código%20de%20activación%20para%20la%20app%20Oink" target="_blank" class="font-bold text-oro-dark underline">
-                    Adquirir acceso aquí.
-                </a>
-            </p>
+            <form id="activationForm" class="space-y-3 text-left">
+                <div>
+                    <input type="text" id="activationInput" placeholder="Ej. FLOW-2026" required autocomplete="off"
+                        class="w-full bg-crema border border-beige rounded-2xl px-4 py-3.5 text-center text-sm font-bold uppercase tracking-widest text-carbon placeholder:text-piedra/50 placeholder:font-medium placeholder:tracking-normal">
+                    <p id="activationError" class="hidden text-[11px] font-semibold text-terracota-dark text-center mt-2">
+                        Código incorrecto. Verifica e intenta nuevamente.
+                    </p>
+                </div>
+                <button type="submit" class="w-full bg-carbon hover:bg-carbon/90 text-crema font-bold text-xs py-4 rounded-2xl shadow-md transition active:scale-[0.98]">
+                    Activar Aplicación
+                </button>
+            </form>
+
+            <div class="pt-2 border-t border-beige">
+                <p class="text-[11px] text-piedra">
+                    ¿Aún no tienes tu código? <br>
+                    <a href="https://wa.me/5492284323833?text=Hola!%20Quiero%20mi%20código%20de%20activación%20para%20la%20app%20Flow" target="_blank" class="font-bold text-oro-dark underline">
+                        Adquirir acceso aquí.
+                    </a>
+                </p>
+            </div>
         </div>
     </div>
-</div>
 
     <!-- ==================== MENÚ LATERAL DE CATEGORÍAS (DRAWER) ==================== -->
     <div id="sideDrawerOverlay" class="fixed inset-0 z-50 bg-carbon/40 backdrop-blur-xs hidden opacity-0"></div>
     <aside id="sideDrawerPanel" class="fixed top-0 left-0 bottom-0 z-50 w-80 max-w-[85vw] bg-crema border-r border-beige -translate-x-full flex flex-col shadow-2xl">
         <div class="p-5 border-b border-beige flex items-center justify-between">
             <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-2xl bg-arena border border-beige flex items-center justify-center text-lg">🐷</div>
+                <div class="w-9 h-9 rounded-2xl bg-arena border border-beige flex items-center justify-center text-xs font-bold text-carbon">FL</div>
                 <div>
-                    <h2 class="text-base font-bold text-carbon leading-none">Oink</h2>
+                    <h2 class="text-base font-bold text-carbon leading-none">Flow</h2>
                     <span class="text-[10px] font-semibold uppercase tracking-wider text-piedra">Espacios y Áreas</span>
                 </div>
             </div>
@@ -193,7 +193,7 @@
         </div>
 
         <div class="p-4 border-t border-beige text-[10px] text-piedra text-center">
-            Oink · Finanzas por categoría y consolidadas
+            Flow · Gestión Financiera Integral
         </div>
     </aside>
 
@@ -251,8 +251,8 @@
                     </button>
                     <div class="min-w-0">
                         <div class="flex items-center gap-1.5">
-                            <span class="text-base">🐷</span>
-                            <h1 class="text-lg font-bold tracking-tight text-carbon leading-none">Oink</h1>
+                            <span class="text-xs font-bold bg-carbon text-crema px-1.5 py-0.5 rounded-md">FL</span>
+                            <h1 class="text-lg font-bold tracking-tight text-carbon leading-none">Flow</h1>
                         </div>
                         <button id="headerCategoryPill" class="mt-1 inline-flex items-center gap-1 text-[10px] font-bold text-oro-dark bg-oro-light px-2 py-0.5 rounded-full truncate max-w-[155px]">
                             <span id="activeCatBadgeIcon">📊</span>
@@ -455,7 +455,7 @@
                             class="w-full bg-crema border border-beige rounded-xl pl-9 pr-3 py-2.5 text-sm font-semibold text-carbon">
                     </div>
                     <input type="number" id="fixedDueDay" min="1" max="31" placeholder="Día venc. (1-31)" required
-                        class="w-full bg-crema border border-beige rounded-xl px-3.5 py-2.5 text-sm font-semibold text-carbon">
+                        class="w-full bg-crema border border-beige rounded-xl px-3.5 py-2.5 text-sm text-carbon">
                 </div>
 
                 <div id="installmentFields" class="hidden grid-cols-2 gap-2.5 bg-oro-light/60 p-3 rounded-xl border border-oro/20">
@@ -469,8 +469,8 @@
                         <input type="number" id="fixedTotalInst" min="1" max="60" value="3"
                             class="w-full bg-white border border-beige rounded-lg px-2.5 py-1.5 text-xs font-bold text-carbon">
                     </div>
-                    <p class="col-span-2 text-[10px] text-oro-dark font-medium">
-                        Oink sumará esta cuota automáticamente mes a mes hasta llegar a la última.
+                    <p class="col-span-2 text-[10px] font-oro-dark font-medium">
+                        Flow sumará esta cuota automáticamente mes a mes hasta llegar a la última.
                     </p>
                 </div>
 
@@ -663,8 +663,8 @@
     </nav>
 
     <script>
-        const ACTIVATION_KEY = 'oink_app_activated_v1';
-        const VALID_CODES = ['OINK-FIN', 'OINK-VIP', 'ALCANCIA-PRO'];
+        const ACTIVATION_KEY = 'flow_app_activated_v1';
+        const VALID_CODES = ['FLOW-FIN', 'FLOW-VIP', 'SALDO-PRO'];
 
         const activationScreen = document.getElementById('activationScreen');
         const activationForm = document.getElementById('activationForm');
@@ -682,7 +682,7 @@
             if (VALID_CODES.includes(entered)) {
                 localStorage.setItem(ACTIVATION_KEY, 'true');
                 activationScreen.classList.add('hidden');
-                showToast('¡Aplicación activada con éxito!', '🐷');
+                showToast('¡Aplicación activada con éxito!', 'FL');
             } else {
                 activationError.classList.remove('hidden');
                 activationInput.classList.add('border-terracota');
@@ -694,7 +694,7 @@
             activationInput.classList.remove('border-terracota');
         });
 
-        const STORAGE_KEY = 'oink_finanzas_clean_v1';
+        const STORAGE_KEY = 'flow_finanzas_clean_v1';
         const today = new Date();
 
         let state = {
@@ -743,7 +743,7 @@
         }
 
         function getCategoryById(id) {
-            return state.categories.find(c => c.id === id) || { id: 'default', name: 'General', icon: '🐷' };
+            return state.categories.find(c => c.id === id) || { id: 'default', name: 'General', icon: '📊' };
         }
 
         let toastTimer;
@@ -1662,7 +1662,7 @@
                 const stats = computeStats(state.activeCategoryId);
                 const scope = state.activeCategoryId === 'all' ? 'CONSOLIDADO' : getCategoryById(state.activeCategoryId).name.toUpperCase();
                 const text = [
-                    `🐷 OINK · INFORME ${scope} (${MONTH_NAMES[state.selectedMonth]} ${state.selectedYear})`,
+                    `📊 FLOW · INFORME ${scope} (${MONTH_NAMES[state.selectedMonth]} ${state.selectedYear})`,
                     `──────────────────────────`,
                     `✅ Ingresos Cobrados: ${formatMoney(stats.incomePaid)}`,
                     `⏳ Por Cobrar: ${formatMoney(stats.incomePending)}`,
@@ -1679,11 +1679,11 @@
                 showToast('Informe copiado', '📋');
             };
 
-exportJsonBtn.onclick = () => {
+            document.getElementById('exportJsonBtn').onclick = () => {
                 const blob = new Blob([localStorage.getItem(STORAGE_KEY) || '{}'], { type: 'application/json' });
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
-                a.download = `oink-respaldo-${getPeriodKey()}.json`;
+                a.download = `flow-respaldo-${getPeriodKey()}.json`;
                 a.click();
                 showToast('Respaldo descargado');
             };
