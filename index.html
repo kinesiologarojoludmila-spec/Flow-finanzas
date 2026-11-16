@@ -88,6 +88,45 @@
 </head>
 <body class="antialiased selection:bg-arena selection:text-carbon">
 
+    <!-- ==================== PANTALLA DE ACTIVACIÓN ==================== -->
+<div id="activationScreen" class="fixed inset-0 z-[100] bg-crema flex items-center justify-center p-5">
+    <div class="card-editorial rounded-3xl p-7 max-w-sm w-full text-center space-y-5 shadow-xl">
+        <div class="w-16 h-16 rounded-3xl bg-arena border border-beige flex items-center justify-center text-3xl mx-auto">
+            🐷
+        </div>
+        <div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-oro-dark block mb-1">Acceso Exclusivo</span>
+            <h2 class="text-2xl font-bold text-carbon">Bienvenido a Oink</h2>
+            <p class="text-xs text-piedra mt-1.5 leading-relaxed">
+                Ingresa tu código de activación para desbloquear tu alcancía digital en este dispositivo.
+            </p>
+        </div>
+
+        <form id="activationForm" class="space-y-3 text-left">
+            <div>
+                <input type="text" id="activationInput" placeholder="Ej. OINK-2026" required autocomplete="off"
+                    class="w-full bg-crema border border-beige rounded-2xl px-4 py-3.5 text-center text-sm font-bold uppercase tracking-widest text-carbon placeholder:text-piedra/50 placeholder:font-medium placeholder:tracking-normal">
+                <p id="activationError" class="hidden text-[11px] font-semibold text-terracota-dark text-center mt-2">
+                    Código incorrecto. Verifica e intenta nuevamente.
+                </p>
+            </div>
+            <button type="submit" class="w-full bg-carbon hover:bg-carbon/90 text-crema font-bold text-xs py-4 rounded-2xl shadow-md transition active:scale-[0.98]">
+                Activar Aplicación
+            </button>
+        </form>
+
+        <div class="pt-2 border-t border-beige">
+            <p class="text-[11px] text-piedra">
+                ¿Aún no tienes tu código? <br>
+                <!-- Reemplaza el href con tu link de Mercado Pago o WhatsApp -->
+                <a href="https://wa.me/5492284323833?text=Hola!%20Quiero%20mi%20código%20de%20activación%20para%20la%20app%20Oink" target="_blank" class="font-bold text-oro-dark underline">
+                    Adquirir acceso aquí.
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
     <!-- ==================== MENÚ LATERAL DE CATEGORÍAS (DRAWER) ==================== -->
     <div id="sideDrawerOverlay" class="fixed inset-0 z-50 bg-carbon/40 backdrop-blur-xs hidden opacity-0"></div>
     <aside id="sideDrawerPanel" class="fixed top-0 left-0 bottom-0 z-50 w-80 max-w-[85vw] bg-crema border-r border-beige -translate-x-full flex flex-col shadow-2xl">
@@ -636,6 +675,39 @@
     </nav>
 
     <script>
+
+        // --- VALIDACIÓN DE CÓDIGO DE ACTIVACIÓN ---
+const ACTIVATION_KEY = 'oink_app_activated_v1';
+// Puedes definir uno o varios códigos válidos (en mayúsculas)
+const VALID_CODES = ['OINK-FIN', 'OINK-VIP', 'ALCANCIA-PRO'];
+
+const activationScreen = document.getElementById('activationScreen');
+const activationForm = document.getElementById('activationForm');
+const activationInput = document.getElementById('activationInput');
+const activationError = document.getElementById('activationError');
+
+if (localStorage.getItem(ACTIVATION_KEY) === 'true') {
+    activationScreen.classList.add('hidden');
+}
+
+activationForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const entered = activationInput.value.trim().toUpperCase();
+
+    if (VALID_CODES.includes(entered)) {
+        localStorage.setItem(ACTIVATION_KEY, 'true');
+        activationScreen.classList.add('hidden');
+        showToast('¡Aplicación activada con éxito!', '🐷');
+    } else {
+        activationError.classList.remove('hidden');
+        activationInput.classList.add('border-terracota');
+    }
+});
+
+activationInput.addEventListener('input', () => {
+    activationError.classList.add('hidden');
+    activationInput.classList.remove('border-terracota');
+});
         /**
          * ============================================================================
          * OINK · GESTIÓN FINANCIERA POR CATEGORÍAS, CUOTAS E INVERSIONES
