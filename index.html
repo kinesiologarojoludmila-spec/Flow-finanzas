@@ -78,7 +78,6 @@
             box-shadow: 0 4px 20px -4px rgba(44, 42, 41, 0.04);
         }
 
-        /* Drawer lateral */
         #sideDrawerOverlay {
             transition: opacity 0.25s ease;
         }
@@ -124,9 +123,7 @@
                     <span class="text-[10px] font-bold uppercase tracking-widest text-piedra">Mis Categorías</span>
                     <span class="text-[10px] text-piedra">Toca ✎ para renombrar</span>
                 </div>
-                <div id="drawerCategoriesList" class="space-y-1.5">
-                    <!-- Dinámico -->
-                </div>
+                <div id="drawerCategoriesList" class="space-y-1.5"></div>
             </div>
 
             <!-- Crear Nueva Categoría -->
@@ -205,7 +202,6 @@
         <!-- Cabecera Superior -->
         <header class="sticky top-0 z-30 bg-crema/95 backdrop-blur-md border-b border-beige px-4 py-3.5">
             <div class="flex items-center justify-between gap-2">
-                <!-- Botón Menú Lateral + Marca Oink + Espacio Activo -->
                 <div class="flex items-center gap-2.5 min-w-0">
                     <button id="openDrawerBtn" aria-label="Abrir categorías" class="p-2 rounded-xl bg-arena border border-beige text-carbon hover:bg-beige transition active:scale-95 shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h12M4 18h16"/></svg>
@@ -284,7 +280,7 @@
                         <span class="text-[10px] font-bold text-piedra uppercase tracking-wider">Egresos</span>
                     </div>
                     <div id="totalExpensePaid" class="text-lg font-bold text-terracota-dark">$ 0</div>
-                    <span id="expenseBreakdownHint" class="text-[10px] text-piedra block mt-0.5">Var + Fijos/Cuotas</span>
+                    <span id="expenseBreakdownHint" class="text-[10px] text-piedra block mt-0.5">Var: $ 0 · Fijos: $ 0</span>
                 </div>
 
                 <div class="card-editorial rounded-2xl p-4">
@@ -316,10 +312,8 @@
                     <h2 class="text-sm font-bold text-carbon">Estadística por Categorías</h2>
                     <span class="text-[10px] font-bold bg-arena text-piedra px-2.5 py-0.5 rounded-full">Unificado</span>
                 </div>
-                <p class="text-[11px] text-piedra mb-4">Rendimiento comparativo entre Departamento, Hogar, Consultorio y Emprendimiento</p>
-                <div id="consolidatedCategoriesStats" class="space-y-3.5">
-                    <!-- Generado dinámicamente -->
-                </div>
+                <p class="text-[11px] text-piedra mb-4">Rendimiento comparativo entre tus espacios activos</p>
+                <div id="consolidatedCategoriesStats" class="space-y-3.5"></div>
             </section>
 
             <!-- Desglose por Motivo -->
@@ -329,10 +323,12 @@
                 <div id="reasonBreakdownList" class="space-y-3"></div>
             </section>
 
-            <!-- Respaldo JSON -->
-            <section class="bg-arena/70 border border-beige rounded-2xl p-4">
-                <h3 class="text-xs font-bold text-carbon mb-1">Respaldo de Datos Oink</h3>
-                <p class="text-[11px] text-piedra mb-3">Guarda o restaura toda tu información (categorías, cuotas, dólares e inversiones).</p>
+            <!-- Respaldo JSON y Reinicio -->
+            <section class="bg-arena/70 border border-beige rounded-2xl p-4 space-y-2.5">
+                <div>
+                    <h3 class="text-xs font-bold text-carbon mb-1">Respaldo y Administración</h3>
+                    <p class="text-[11px] text-piedra">Guarda, restaura o reinicia tus registros desde cero.</p>
+                </div>
                 <div class="flex gap-2">
                     <button id="exportJsonBtn" class="flex-1 bg-white border border-beige hover:bg-crema text-carbon text-xs font-semibold py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5">
                         Exportar JSON
@@ -342,6 +338,9 @@
                         <input type="file" id="importJsonInput" accept=".json" class="hidden">
                     </label>
                 </div>
+                <button id="hardResetBtn" class="w-full bg-terracota-light/70 hover:bg-terracota-light text-terracota-dark border border-terracota/20 text-[11px] font-bold py-2.5 rounded-xl transition">
+                    Reiniciar todos los datos a cero
+                </button>
             </section>
         </main>
 
@@ -401,9 +400,7 @@
                 <input type="hidden" id="fixedKind" value="regular">
 
                 <div class="grid grid-cols-2 gap-2.5">
-                    <select id="fixedCategory" class="bg-crema border border-beige rounded-xl px-3 py-2.5 text-xs font-semibold text-carbon">
-                        <!-- Opciones dinámicas de categorías -->
-                    </select>
+                    <select id="fixedCategory" class="bg-crema border border-beige rounded-xl px-3 py-2.5 text-xs font-semibold text-carbon"></select>
                     <select id="fixedCurrency" class="bg-crema border border-beige rounded-xl px-3 py-2.5 text-xs font-bold text-carbon">
                         <option value="ARS">En Pesos ($)</option>
                         <option value="USD">En Dólares (US$)</option>
@@ -561,9 +558,7 @@
                 <!-- Selector de Categoría / Espacio -->
                 <div>
                     <label for="movCategory" class="block text-[11px] font-semibold text-piedra uppercase tracking-wider mb-1.5">Categoría / Espacio</label>
-                    <select id="movCategory" required class="w-full bg-crema border border-beige rounded-2xl px-4 py-3 text-sm font-bold text-carbon">
-                        <!-- Dinámico -->
-                    </select>
+                    <select id="movCategory" required class="w-full bg-crema border border-beige rounded-2xl px-4 py-3 text-sm font-bold text-carbon"></select>
                 </div>
 
                 <!-- Monto -->
@@ -579,7 +574,7 @@
                 <!-- Motivo -->
                 <div>
                     <label for="movReason" class="block text-[11px] font-semibold text-piedra uppercase tracking-wider mb-1.5">Motivo o Concepto</label>
-                    <input type="text" id="movReason" placeholder="Ej. Consulta particular, Venta Piume, Expensas..." required
+                    <input type="text" id="movReason" placeholder="Ej. Consulta particular, Venta, Expensas..." required
                         class="w-full bg-crema border border-beige rounded-2xl px-4 py-3 text-sm font-medium text-carbon placeholder:text-piedra/60">
                     <div id="quickTags" class="flex flex-wrap gap-1.5 mt-2"></div>
                 </div>
@@ -644,22 +639,23 @@
         /**
          * ============================================================================
          * OINK · GESTIÓN FINANCIERA POR CATEGORÍAS, CUOTAS E INVERSIONES
+         * Inicia en cero para carga limpia y personalizada
          * ============================================================================
          */
-        const STORAGE_KEY = 'oink_finanzas_v2';
+        const STORAGE_KEY = 'oink_finanzas_clean_v1';
         const today = new Date();
 
         let state = {
             selectedYear: today.getFullYear(),
             selectedMonth: today.getMonth(), // 0 - 11
-            activeCategoryId: 'all', // 'all' o ID de categoría específica
+            activeCategoryId: 'all',
             currentFilter: 'all',
             categories: [],       // { id, name, icon }
-            movements: [],        // { id, categoryId, type: 'income'|'expense', amount, reason, date, status }
-            fixedTemplates: [],   // { id, categoryId, kind: 'regular'|'installment', currency: 'ARS'|'USD', name, amount, dueDay, startYear, startMonth, startInst, totalInst }
+            movements: [],        // { id, categoryId, type, amount, reason, date, status }
+            fixedTemplates: [],   // { id, categoryId, kind, currency, name, amount, dueDay, startYear, startMonth, startInst, totalInst }
             fixedPayments: {},    // { 'YYYY-MM': { [fixedId]: true } }
             usdPurchases: [],     // { id, qty, rate, totalArs, date, categoryId, linkedMovementId }
-            investments: []       // { id, name, currency: 'ARS'|'USD', capital, currentVal }
+            investments: []       // { id, name, currency, capital, currentVal }
         };
 
         const MONTH_NAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -727,7 +723,7 @@
             });
         }
 
-        // --- PERSISTENCIA ---
+        // --- PERSISTENCIA E INICIALIZACIÓN EN CERO ---
         function saveData() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify({
                 categories: state.categories,
@@ -737,6 +733,26 @@
                 usdPurchases: state.usdPurchases,
                 investments: state.investments
             }));
+        }
+
+        function getDefaultCategories() {
+            return [
+                { id: 'cat_depto', name: 'Departamento', icon: '🏢' },
+                { id: 'cat_hogar', name: 'Hogar', icon: '🏡' },
+                { id: 'cat_consultorio', name: 'Consultorio', icon: '🩺' },
+                { id: 'cat_emprendimiento', name: 'Emprendimiento', icon: '✨' }
+            ];
+        }
+
+        function initializeEmptyState() {
+            state.activeCategoryId = 'all';
+            state.categories = getDefaultCategories();
+            state.movements = [];
+            state.fixedTemplates = [];
+            state.fixedPayments = {};
+            state.usdPurchases = [];
+            state.investments = [];
+            saveData();
         }
 
         function loadData() {
@@ -751,48 +767,14 @@
                     state.usdPurchases = p.usdPurchases || [];
                     state.investments = p.investments || [];
                 } else {
-                    seedInitialData();
+                    initializeEmptyState();
                 }
             } catch (e) {
-                state.categories = getDefaultCategories();
+                initializeEmptyState();
             }
         }
 
-        function getDefaultCategories() {
-            return [
-                { id: 'cat_depto', name: 'Departamento', icon: '🏢' },
-                { id: 'cat_hogar', name: 'Hogar', icon: '🏡' },
-                { id: 'cat_consultorio', name: 'Consultorio', icon: '🩺' },
-                { id: 'cat_emprendimiento', name: 'Emprendimiento', icon: '✨' }
-            ];
-        }
-
-        function seedInitialData() {
-            state.categories = getDefaultCategories();
-            const prefix = getTodayISO().slice(0, 8);
-            state.movements = [
-                { id: 'm1', categoryId: 'cat_consultorio', type: 'income', amount: 640000, reason: 'Sesiones semanales', date: prefix + '06', status: 'paid' },
-                { id: 'm2', categoryId: 'cat_emprendimiento', type: 'income', amount: 220000, reason: 'Ventas mayoristas', date: prefix + '10', status: 'pending' },
-                { id: 'm3', categoryId: 'cat_hogar', type: 'expense', amount: 85000, reason: 'Supermercado', date: prefix + '08', status: 'paid' }
-            ];
-            state.fixedTemplates = [
-                { id: 'f1', categoryId: 'cat_depto', kind: 'regular', currency: 'ARS', name: 'Alquiler y Expensas', amount: 310000, dueDay: 10 },
-                { id: 'f2', categoryId: 'cat_consultorio', kind: 'regular', currency: 'ARS', name: 'Internet + Luz Consultorio', amount: 42000, dueDay: 15 },
-                { id: 'f3', categoryId: 'cat_hogar', kind: 'installment', currency: 'ARS', name: 'Visa · Electrodoméstico', amount: 65000, dueDay: 18, startYear: state.selectedYear, startMonth: state.selectedMonth, startInst: 2, totalInst: 6 },
-                { id: 'f4', categoryId: 'cat_emprendimiento', kind: 'regular', currency: 'USD', name: 'Suscripción Software / Web', amount: 25, dueDay: 20 }
-            ];
-            state.fixedPayments[getPeriodKey()] = { 'f1': true };
-            state.usdPurchases = [
-                { id: 'u1', qty: 200, rate: 1170, totalArs: 234000, date: prefix + '05', categoryId: 'cat_consultorio', linkedMovementId: null }
-            ];
-            state.investments = [
-                { id: 'inv1', name: 'Fondo Común Money Market', currency: 'ARS', capital: 450000, currentVal: 472500 }
-            ];
-            saveData();
-        }
-
         // --- LÓGICA DE CUOTAS AUTOMÁTICAS MES A MES ---
-        // Calcula si un gasto fijo o cuota aplica al mes seleccionado y qué número de cuota corresponde
         function getFixedItemForPeriod(item, targetYear = state.selectedYear, targetMonth = state.selectedMonth) {
             if (item.kind !== 'installment') {
                 return { active: true, label: `Vence día ${item.dueDay}` };
@@ -813,7 +795,7 @@
             };
         }
 
-        // --- CÁLCULO ESTADÍSTICO (POR CATEGORÍA O CONSOLIDADO) ---
+        // --- CÁLCULO ESTADÍSTICO ---
         function computeStats(categoryFilterId = state.activeCategoryId) {
             const periodPrefix = getPeriodKey();
             const isAll = categoryFilterId === 'all';
@@ -840,7 +822,6 @@
                 reasonMap[key].total += amt;
             });
 
-            // Gastos fijos y tarjetas en cuotas activos en este período
             const paidMap = state.fixedPayments[periodPrefix] || {};
             let fixedPaidArs = 0, fixedPendingArs = 0;
             let fixedPaidUsd = 0, fixedPendingUsd = 0;
@@ -905,7 +886,6 @@
         }
 
         function renderCategoriesUI() {
-            // 1. Drawer list
             const drawerList = document.getElementById('drawerCategoriesList');
             const allBtn = document.getElementById('selectAllCategoriesBtn');
 
@@ -934,7 +914,6 @@
                 `;
             }).join('');
 
-            // 2. Header badge
             if (state.activeCategoryId === 'all') {
                 document.getElementById('activeCatBadgeIcon').textContent = '📊';
                 document.getElementById('activeCatBadgeName').textContent = 'Todas las categorías';
@@ -947,7 +926,6 @@
                 document.getElementById('bannerCatName').textContent = `${cat.icon} ${cat.name}`;
             }
 
-            // 3. Poblar los <select> de formularios (Nuevo movimiento, Fijos, Dólares)
             const optionsHTML = state.categories.map(c =>
                 `<option value="${c.id}">${c.icon} ${escapeHTML(c.name)}</option>`
             ).join('');
@@ -1018,7 +996,6 @@
             renderReasonBreakdown(stats);
         }
 
-        // Estadística Unificada de todas las categorías
         function renderConsolidatedCategories() {
             const container = document.getElementById('consolidatedCategoriesStats');
             const catSummaries = state.categories.map(cat => {
@@ -1026,10 +1003,10 @@
                 return { cat, ...s, volume: s.incomePaid + s.totalExpensePaid };
             });
 
-            const totalVolume = catSummaries.reduce((acc, item) => acc + item.volume, 0) || 1;
+            const totalVolume = catSummaries.reduce((acc, item) => acc + item.volume, 0);
 
             container.innerHTML = catSummaries.map(item => {
-                const sharePct = Math.round((item.volume / totalVolume) * 100);
+                const sharePct = totalVolume > 0 ? Math.round((item.volume / totalVolume) * 100) : 0;
                 const isPos = item.netBalance >= 0;
                 return `
                     <div onclick="selectCategory('${item.cat.id}')" class="p-3 rounded-2xl bg-crema border border-beige/80 hover:border-carbon/30 transition cursor-pointer">
@@ -1040,7 +1017,7 @@
                                 <span class="text-[10px] font-semibold text-piedra bg-arena px-2 py-0.5 rounded-full">${sharePct}% mov.</span>
                             </div>
                             <span class="text-xs font-bold ${isPos ? 'text-menta-dark' : 'text-terracota-dark'}">
-                                ${isPos ? '+' : ''}${formatMoney(item.netBalance)}
+                                ${item.netBalance > 0 ? '+' : ''}${formatMoney(item.netBalance)}
                             </span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[11px] mb-2">
@@ -1118,11 +1095,11 @@
 
             items.forEach((item, idx) => {
                 const cx = slotW * idx + slotW / 2;
-                const bh = Math.max(4, (item.value / maxVal) * chartH);
+                const bh = item.value > 0 ? Math.max(6, (item.value / maxVal) * chartH) : 3;
                 const x = cx - barW / 2;
                 const y = h - padB - bh;
 
-                ctx.fillStyle = item.color;
+                ctx.fillStyle = item.value > 0 ? item.color : '#E5DDD0';
                 ctx.beginPath();
                 ctx.roundRect ? ctx.roundRect(x, y, barW, bh, [6, 6, 0, 0]) : ctx.rect(x, y, barW, bh);
                 ctx.fill();
@@ -1152,7 +1129,7 @@
 
             const container = document.getElementById('movementsList');
             if (!list.length) {
-                container.innerHTML = `<div class="card-editorial rounded-2xl p-8 text-center text-xs text-piedra">No hay movimientos para mostrar aquí.</div>`;
+                container.innerHTML = `<div class="card-editorial rounded-2xl p-8 text-center text-xs text-piedra">No hay movimientos cargados en este período.</div>`;
                 return;
             }
 
@@ -1407,7 +1384,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
 
-            // Drawer lateral
             document.getElementById('openDrawerBtn').onclick = openDrawer;
             document.getElementById('headerCategoryPill').onclick = openDrawer;
             document.getElementById('closeDrawerBtn').onclick = closeDrawer;
@@ -1415,7 +1391,6 @@
             document.getElementById('selectAllCategoriesBtn').onclick = () => selectCategory('all');
             document.getElementById('resetToAllBtn').onclick = () => selectCategory('all');
 
-            // Crear categoría nueva
             document.getElementById('newCategoryForm').addEventListener('submit', e => {
                 e.preventDefault();
                 const name = document.getElementById('newCatName').value.trim();
@@ -1429,7 +1404,6 @@
                 showToast(`Espacio "${name}" creado`);
             });
 
-            // Renombrar categoría
             document.getElementById('cancelRenameBtn').onclick = () => {
                 document.getElementById('renameModal').classList.add('hidden');
             };
@@ -1446,12 +1420,10 @@
                 document.getElementById('renameModal').classList.add('hidden');
             };
 
-            // Navegación inferior
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.addEventListener('click', () => switchTab(btn.dataset.target));
             });
 
-            // Selector de mes
             document.getElementById('prevMonthBtn').onclick = () => {
                 state.selectedMonth--;
                 if (state.selectedMonth < 0) { state.selectedMonth = 11; state.selectedYear--; }
@@ -1463,7 +1435,6 @@
                 refreshAllViews();
             };
 
-            // Filtros movimientos
             document.querySelectorAll('.filter-chip').forEach(chip => {
                 chip.onclick = () => {
                     document.querySelectorAll('.filter-chip').forEach(c => {
@@ -1477,7 +1448,6 @@
                 };
             });
 
-            // Formulario Nuevo Movimiento
             const movDate = document.getElementById('movDate');
             movDate.value = getTodayISO();
 
@@ -1525,7 +1495,6 @@
                 switchTab('view-resumen');
             });
 
-            // Formulario Fijos y Cuotas Tarjeta
             const regBtn = document.getElementById('fixedKindRegularBtn');
             const instBtn = document.getElementById('fixedKindInstallmentBtn');
             const instFields = document.getElementById('installmentFields');
@@ -1590,7 +1559,6 @@
                 refreshAllViews();
             };
 
-            // Compra de Dólares (con cálculo en vivo y vínculo opcional a egreso)
             const usdDate = document.getElementById('usdDate');
             usdDate.value = getTodayISO();
             const updateUsdPreview = () => {
@@ -1635,7 +1603,6 @@
                 showToast(logExpense ? 'Dólares sumados y descontados en egresos' : 'Compra de dólares registrada');
             });
 
-            // Nueva Inversión
             document.getElementById('investmentForm').addEventListener('submit', e => {
                 e.preventDefault();
                 const name = document.getElementById('invName').value.trim();
@@ -1651,7 +1618,6 @@
                 showToast('Inversión agregada');
             });
 
-            // Copiar Informe
             document.getElementById('copyReportBtn').onclick = () => {
                 const stats = computeStats(state.activeCategoryId);
                 const scope = state.activeCategoryId === 'all' ? 'CONSOLIDADO' : getCategoryById(state.activeCategoryId).name.toUpperCase();
@@ -1673,7 +1639,6 @@
                 showToast('Informe copiado', '📋');
             };
 
-            // Exportar / Importar JSON
             document.getElementById('exportJsonBtn').onclick = () => {
                 const blob = new Blob([localStorage.getItem(STORAGE_KEY) || '{}'], { type: 'application/json' });
                 const a = document.createElement('a');
@@ -1701,6 +1666,13 @@
                     }
                 };
                 reader.readAsText(file);
+            };
+
+            document.getElementById('hardResetBtn').onclick = async () => {
+                if (!(await showConfirm('Reiniciar todo a cero', 'Se borrarán todos los movimientos, fijos, cuotas, dólares e inversiones cargados.'))) return;
+                initializeEmptyState();
+                refreshAllViews();
+                showToast('Todos los valores reiniciados a cero');
             };
 
             window.addEventListener('resize', () => {
